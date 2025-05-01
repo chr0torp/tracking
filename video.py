@@ -33,7 +33,7 @@ except Exception as e:
 
 
 print(f"Starting video recording for {record_duration} seconds...")
-picam2.start_recording(encoder=None, output=video_path)
+picam2.start_recording(output=video_path)
 
 time.sleep(record_duration)
 
