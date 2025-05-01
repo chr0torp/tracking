@@ -1,5 +1,6 @@
 
 from picamera2 import Picamera2, Preview
+from picamera2.encoders import H264Encoder
 import time
 import os
 
@@ -31,9 +32,9 @@ try:
 except Exception as e:
     print(f"Could not start preview: {e}. Continuing without preview.")
 
-
+encoder = H264Encoder(bitrate=10000000)
 print(f"Starting video recording for {record_duration} seconds...")
-picam2.start_recording(output=video_path)
+picam2.start_recording(encoder=encoder, output=video_path)
 
 time.sleep(record_duration)
 
