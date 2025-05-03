@@ -1,63 +1,59 @@
-from picamera2 import Picamera2, Preview
-import os
-import signal
-import sys # For sys.exit
+import cv2                     # OpenCV for image handling and display
+from picamera2 import Picamera2 # Picamera2 library
+import time                    # For potential delays (optional here)
 
 print("Initializing camera...")
 picam2 = Picamera2()
 
-print("Configuring preview mode...")
-# Use preview configuration for optimal preview performance
-preview_config = picam2.create_preview_configuration()
-picam2.configure(preview_config)
+print("Configuring camera...")
+# Configure for capturing frames suitable for display.
+# Smaller sizes (like 640x480) are generally faster for real-time display.
+# 'RGB888' is a common format easily handled by OpenCV after conversion.
+config = picam2.create_preview_configuration(main={"format": 'RGB888', "size": (640, 480)})
+picam2.configure(config)
 
-preview_started = False # Flag to track if preview actually started
+print("Starting camera...")
+picam2.start()
+
+# Optional: Give the camera some time to adjust settings like exposure
+time.sleep(1)
+
+print("Displaying camera feed in OpenCV window.")
+print("Press 'q' in the window to quit.")
+
+# Create an OpenCV window
+cv2.namedWindow("Camera Feed", cv2.WINDOW_NORMAL)
+# cv2.resizeWindow("Camera Feed", 1280, 960) # Optional: Resize window if needed
 
 try:
-    display_env = os.environ.get('DISPLAY')
+    while True:
+        # 1. Capture a frame from the camera as a NumPy array.
+        # capture_array() typically returns an RGB image with default configs.
+        frame_rgb = picam2.capture_array()
 
-    if display_env:
-        print("DISPLAY environment detected. Attempting QTGL preview...")
-        # picam2.start_preview(Preview.QTGL)
-        picam2.start_preview(Preview.DRMKMS) # Start the preview with QTGL
-        preview_started = True # Set flag only if start_preview succeeds
-        print("Preview started successfully. Press Ctrl+C to stop.")
-        # Wait indefinitely until a signal (like Ctrl+C) is received
-        signal.pause()
-    else:
-        # Inform the user if the required environment isn't present
-        print("\nError: No DISPLAY environment detected.")
-        print("QTGL preview requires a graphical desktop session (e.g., GUI, VNC, SSH with X11 forwarding).")
-        print("Cannot start preview. Exiting.")
-        # Allow script to proceed to finally block for cleanup
+        # 2. Convert the frame from RGB (Picamera2 format) to BGR (OpenCV format).
+        # OpenCV's imshow function expects BGR format by default.
+        frame_bgr = cv2.cvtColor(frame_rgb, cv2.COLOR_RGB2BGR)
 
-except KeyboardInterrupt:
-    # Handle Ctrl+C gracefully
-    print("\nCtrl+C detected. Stopping.")
+        # 3. Display the frame in the OpenCV window.
+        cv2.imshow("Camera Feed", frame_bgr)
 
-except Exception as e:
-    # Catch any other errors during setup or preview start
-    print(f"\nAn unexpected error occurred: {e}")
-    if not preview_started:
-         print("Failed to start preview. Check camera connection and logs.")
+        # 4. Wait for a key press for 1 millisecond.
+        # This is CRUCIAL:
+        #  - It allows OpenCV to process GUI events and update the window.
+        #  - It checks if the 'q' key was pressed.
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
+            print("Quit key ('q') pressed.")
+            break
+        # Add other key checks here if needed (e.g., ord('s') to save)
 
 finally:
-    # This block executes whether the try block succeeded, raised an exception, or was interrupted
-    print("Cleaning up resources...")
-    if preview_started: # Only try to stop if we successfully started
-        try:
-            picam2.stop_preview()
-            print("Preview stopped.")
-        except Exception as e:
-            # Log error if stopping fails, but continue cleanup
-            print(f"Warning: Error stopping preview: {e}")
-
-    # Always try to close the camera if it was opened
-    if picam2.is_open:
-        try:
-            picam2.close()
-            print("Camera closed.")
-        except Exception as e:
-            print(f"Warning: Error closing camera: {e}")
+    # --- Cleanup ---
+    # This block runs even if errors occur or Ctrl+C is pressed (though waitKey catches 'q')
+    print("Stopping camera and closing resources...")
+    picam2.stop()             # Stop the camera stream
+    cv2.destroyAllWindows()   # Close the OpenCV display window
+    # picam2.close()          # Optional: close the camera object if fully done
 
 print("Script finished.")
