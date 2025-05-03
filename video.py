@@ -3,6 +3,7 @@ from picamera2 import Picamera2, Preview
 from picamera2.encoders import H264Encoder
 import time
 import os
+import signal
 
 home_dir = os.environ.get('HOME', '/home/pi') # Provide default if HOME not set
 video_path = f"{home_dir}/Desktop/new_video.mp4"
@@ -28,15 +29,19 @@ try:
             if display_env:
                 print("Starting QTGL preview...")
                 picam2.start_preview(Preview.QTGL)
-            else:
-                print("No DISPLAY detected, attempting DRMKMS preview (requires monitor)...")
-                picam2.start_preview(Preview.DRMKMS) # Uncomment if you have a direct monitor
-                print("Preview skipped (headless or no direct monitor).")
+                started_preview = True
 
+            else: 
+                exit(0) 
+            
+            if started_preview:
+                print("Preview started successfully.")
+                signal.pause()
+                
         except Exception as e:
             print(f"Could not start preview: {e}. Continuing without preview.")
 
-        encoder = H264Encoder(bitrate=10000000)
+        # encoder = H264Encoder(bitrate=10000000)
 # print(f"Starting video recording for {record_duration} seconds...")
 # picam2.start_recording(encoder=encoder, output=video_path)
 
