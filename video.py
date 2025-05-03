@@ -18,7 +18,8 @@ try:
 
     if display_env:
         print("DISPLAY environment detected. Attempting QTGL preview...")
-        picam2.start_preview(Preview.QTGL)
+        # picam2.start_preview(Preview.QTGL)
+        picam2.start_preview(Preview.DRMKMS) # Start the preview with QTGL
         preview_started = True # Set flag only if start_preview succeeds
         print("Preview started successfully. Press Ctrl+C to stop.")
         # Wait indefinitely until a signal (like Ctrl+C) is received
@@ -31,6 +32,7 @@ try:
         # Allow script to proceed to finally block for cleanup
 
 except KeyboardInterrupt:
+    # Handle Ctrl+C gracefully
     print("\nCtrl+C detected. Stopping.")
 
 except Exception as e:
