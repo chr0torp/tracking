@@ -8,6 +8,8 @@ print("Home directory:", home_dir)
 place = os.path.join(home_dir, "Desktop", "Pictures", "image0.jpg")
 print("place:", place)
 
+os.makedirs(place, exist_ok=True)
+
 camera = Picamera2()
 time.sleep(2)
 
