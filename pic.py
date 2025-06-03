@@ -1,7 +1,7 @@
-from picamera import PiCamera
+from picamera2 import PiCamera2
 import os
 
-camera = PiCamera()
+camera = PiCamera2()
 time.sleep(2)
 
 place = "/Desktop/Pictures/image0"
