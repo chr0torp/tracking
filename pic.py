@@ -1,20 +1,19 @@
-from picamera2 import PiCamera2
+from picamera2 import Picamera2
+import time
 import os
 
-camera = PiCamera2()
+camera = Picamera2()
 time.sleep(2)
 
 place = "/Desktop/Pictures/image0"
 
+camera.capture_file(place + ".jpg")
 
+# if not os.path.exists(place):
+#     number = 0
+#     name = place + str(number) + ".jpg"
+#     while os.path.exists(name):
+#         number += 1
+#         name = place + str(number) + ".jpg"
 
-if not os.path.exists(place):
-    number = 0
-    name = place + str(number) + ".jpg"
-    while os.path.exists(name):
-        number += 1
-        name = place + str(number) + ".jpg"
-
-
-camera.capture(name)
 print("Done.")
