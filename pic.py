@@ -17,9 +17,13 @@ camera = Picamera2()
 config = camera.create_still_configuration()
 camera.configure(config)
 
-time.sleep(2)
 
 full_path = os.path.join(place, "image.jpg")
+
+
+camera.start()
+time.sleep(2)
+
 camera.capture_file(full_path)
 
 camera.stop()
