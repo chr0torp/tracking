@@ -1,14 +1,12 @@
-import cv2                     # OpenCV for image handling and display
-from picamera2 import Picamera2 # Picamera2 library
-import time                    # For potential delays (optional here)
+import cv2
+from picamera2 import Picamera2
+import time 
 
 print("Initializing camera...")
 picam2 = Picamera2()
 
 print("Configuring camera...")
-# Configure for capturing frames suitable for display.
-# Smaller sizes (like 640x480) are generally faster for real-time display.
-# 'RGB888' is a common format easily handled by OpenCV after conversion.
+# size (640, 480)
 config = picam2.create_preview_configuration(main={"format": 'RGB888', "size": (640, 480)})
 picam2.configure(config)
 
