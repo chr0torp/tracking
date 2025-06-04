@@ -1,4 +1,5 @@
 from picamera2 import Picamera2
+import libcamera
 import time
 import os
 
@@ -15,6 +16,7 @@ os.makedirs(place, exist_ok=True)
 camera = Picamera2()
 
 config = camera.create_still_configuration(main={"format": 'RGB888', "size": (640, 480)})
+config["transform"] = libcamera.Transform(hflip=1, vflip=1)
 camera.configure(config)
 
 
