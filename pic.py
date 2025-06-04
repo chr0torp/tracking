@@ -20,11 +20,11 @@ camera.configure(config)
 
 full_path = os.path.join(place, "image.jpg")
 
-
+print("1")
 camera.start()
 time.sleep(2)
-
+print("2")
 camera.capture_file(full_path)
-
+print("3")
 camera.stop()
 print("Done.")
