@@ -18,8 +18,17 @@ config = camera.create_still_configuration(main={"format": 'RGB888', "size": (64
 camera.configure(config)
 
 
-full_path = os.path.join(place, "image.jpg")
+full_path = os.path.join(place, "image_0.jpg")
+num = 0
 
+while os.path.exists(full_path):
+    print(f"File already exists {full_path}")
+    num += 1
+    full_path = os.path.join(place, f"image_{num}.jpg")
+
+
+
+print("Full path for saving image:", full_path)
 print("1")
 camera.start()
 time.sleep(2)
