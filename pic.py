@@ -15,8 +15,8 @@ os.makedirs(place, exist_ok=True)
 
 camera = Picamera2()
 # print(camera.sensor_modes)
-# size (640, 480) ; (1640,1232) ; (1920, 1080) ; (3280, 2464)
-config = camera.create_still_configuration(main={"format": 'RGB888', "size": (3280, 2464)})
+# size (640, 480) ; (1920, 1080) ; (3280, 2464)
+config = camera.create_still_configuration(main={"format": 'RGB888', "size": (1920, 1080)})
 config["transform"] = libcamera.Transform(hflip=1, vflip=1)
 camera.configure(config)
 
