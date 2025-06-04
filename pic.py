@@ -14,7 +14,7 @@ os.makedirs(place, exist_ok=True)
 
 camera = Picamera2()
 
-config = camera.create_still_configuration()
+config = camera.create_still_configuration(main={"format": 'RGB888', "size": (640, 480)})
 camera.configure(config)
 
 
