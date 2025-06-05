@@ -1,5 +1,6 @@
 import cv2
 from picamera2 import Picamera2
+import libcamera
 import time 
 
 print("Initializing camera...")
@@ -8,6 +9,7 @@ picam2 = Picamera2()
 print("Configuring camera...")
 # size (640, 480)
 config = picam2.create_preview_configuration(main={"format": 'RGB888', "size": (1920, 1080)})
+config["transform"] = libcamera.Transform(hflip=1, vflip=1)
 picam2.configure(config)
 
 print("Starting camera...")
